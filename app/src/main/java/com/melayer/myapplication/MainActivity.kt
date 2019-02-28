@@ -1,13 +1,67 @@
 package com.melayer.myapplication
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.widget.ProgressBar
+import com.melayer.myapplication.adapter.RecyclerAdapter
+import com.melayer.myapplication.models.NicePlaces
+import com.melayer.myapplication.viewModels.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
 
+    private var fab: FloatingActionButton? = null
+    private var recyclerView: RecyclerView? = null
+    private var recyclerAdapter: RecyclerAdapter? = null
+    private var progressBar: ProgressBar? = null
+    private var mainActivityViewModel: MainActivityViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mainActivityViewModel =
+            ViewModelProviders.of(this).get<MainActivityViewModel>(MainActivityViewModel::class.java!!)
+        mainActivityViewModel!!.init()
+
+        mainActivityViewModel?.nicePlaces?.observe(this,
+            Observer<List<NicePlaces>> { recyclerAdapter?.notifyDataSetChanged() })
+
+        mainActivityViewModel?.isUpdating?.observe(this, Observer<Boolean> { aBoolean ->
+            if (aBoolean!!) {
+                showProgressBar()
+            } else {
+                hideProgressBar()
+                recyclerView?.smoothScrollToPosition(mainActivityViewModel?.nicePlaces?.value!!.size)
+            }
+        })
+
+        fab?.setOnClickListener(View.OnClickListener {
+            mainActivityViewModel!!.addNewValue(
+                NicePlaces("Washington", "https://i.imgur.com/ZcLLrkY.jpg")
+            )
+        })
+
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        recyclerAdapter = RecyclerAdapter(this, mainActivityViewModel?.nicePlaces?.value!!)
+        val layoutManager = LinearLayoutManager(this)
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = recyclerAdapter
+    }
+
+    private fun showProgressBar() {
+        progressBar?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        progressBar?.visibility = View.INVISIBLE
     }
 }
