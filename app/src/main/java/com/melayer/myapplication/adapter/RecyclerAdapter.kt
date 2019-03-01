@@ -14,7 +14,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 import java.util.ArrayList
 
-class RecyclerAdapter(private val mContext: Context, nicePlaces: List<NicePlaces>) :
+class RecyclerAdapter(private val mContext: Context, nicePlaces: ArrayList<NicePlaces>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mNicePlaces = ArrayList<NicePlaces>()

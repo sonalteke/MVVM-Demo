@@ -2,21 +2,18 @@ package com.melayer.myapplication
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ProgressBar
 import com.melayer.myapplication.adapter.RecyclerAdapter
 import com.melayer.myapplication.models.NicePlaces
 import com.melayer.myapplication.viewModels.MainActivityViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var fab: FloatingActionButton? = null
-    private var recyclerView: RecyclerView? = null
     private var recyclerAdapter: RecyclerAdapter? = null
     private var progressBar: ProgressBar? = null
     private var mainActivityViewModel: MainActivityViewModel? = null
@@ -27,10 +24,10 @@ class MainActivity : AppCompatActivity() {
 
         mainActivityViewModel =
             ViewModelProviders.of(this).get<MainActivityViewModel>(MainActivityViewModel::class.java!!)
-        mainActivityViewModel!!.init()
+        mainActivityViewModel?.init()
 
         mainActivityViewModel?.nicePlaces?.observe(this,
-            Observer<List<NicePlaces>> { recyclerAdapter?.notifyDataSetChanged() })
+            Observer<ArrayList<NicePlaces>> { recyclerAdapter?.notifyDataSetChanged() })
 
         mainActivityViewModel?.isUpdating?.observe(this, Observer<Boolean> { aBoolean ->
             if (aBoolean!!) {
@@ -41,12 +38,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        fab?.setOnClickListener(View.OnClickListener {
-            mainActivityViewModel!!.addNewValue(
+        fab?.setOnClickListener {
+            mainActivityViewModel?.addNewValue(
                 NicePlaces("Washington", "https://i.imgur.com/ZcLLrkY.jpg")
             )
-        })
-
+        }
         initRecyclerView()
     }
 

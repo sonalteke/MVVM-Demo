@@ -11,11 +11,11 @@ import java.util.Objects
 
 class MainActivityViewModel : ViewModel() {
 
-    private var mNicePlaces: MutableLiveData<List<NicePlaces>>? = null
+    private var mNicePlaces: MutableLiveData<ArrayList<NicePlaces>>? = null
     private var mRepo: NicePlacesRepository? = null
     private val mIsUpdating = MutableLiveData<Boolean>()
 
-    val nicePlaces: LiveData<List<NicePlaces>>?
+    val nicePlaces: LiveData<ArrayList<NicePlaces>>?
         get() = mNicePlaces
 
     val isUpdating: LiveData<Boolean>?
@@ -37,8 +37,8 @@ class MainActivityViewModel : ViewModel() {
 
             override fun onPostExecute(aVoid: Void) {
                 super.onPostExecute(aVoid)
-                val currentPlaces  = mNicePlaces!!.value
-                Objects.requireNonNull<ArrayList<NicePlaces>>(currentPlaces as ArrayList<NicePlaces>?).add(nicePlaces)
+                val currentPlaces  = mNicePlaces?.value
+                Objects.requireNonNull<ArrayList<NicePlaces>>(currentPlaces).add(nicePlaces)
                 mNicePlaces!!.postValue(currentPlaces)
                 mIsUpdating.postValue(false)
             }
